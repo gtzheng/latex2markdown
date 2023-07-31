@@ -236,7 +236,6 @@ def main_latext2markdown(document: str) -> str:
     store_figure = False
     store_figure_star = False
     bracket_count = 0
-    figure_count = 1
     for c in document:
         v = buffer.add(c)
         if buffer.match("  "): # if there are two spaces
@@ -259,7 +258,7 @@ def main_latext2markdown(document: str) -> str:
             if buffer.match("\\end{abstract}"):
                 buffer.empty(len("\\end{abstract}"))
                 store_abstract = False
-                target.append("---\nabstract: >\n")
+                target.append("---\nabstract: >\n  ")
                 for s in abstract_text:
                     target.append(s)
                 if v is not None:
@@ -280,8 +279,7 @@ def main_latext2markdown(document: str) -> str:
                 buffer.empty(len("\\end{figure}"))
                 store_figure = False
                 path, caption, label = get_figure(figure_text)
-                target.append(f"![\label{{{label}}}**Figure {figure_count}:** {caption}]({path}){{fullwidth=t}}\n")
-                figure_count += 1
+                target.append(f"![\label{{{label}}}**Figure \ref{{{label}}}:** {caption}]({path}){{fullwidth=t}}\n")
             else:
                 if v is not None:
                     figure_text.append(v)
@@ -292,8 +290,7 @@ def main_latext2markdown(document: str) -> str:
                 buffer.empty(len("\\end{figure*}"))
                 store_figure_star = False
                 path, caption, label = get_figure(figure_text)
-                target.append(f"![\label{{{label}}}**Figure {figure_count}:** {caption}]({path}){{fullwidth=t}}\n")
-                figure_count += 1
+                target.append(f"![\label{{{label}}}**Figure \\ref{{{label}}}:** {caption}]({path}){{fullwidth=t}}\n")
             else:
                 if v is not None:
                     figure_text.append(v)
